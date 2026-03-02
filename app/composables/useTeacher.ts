@@ -1,13 +1,16 @@
 import { apiTeacher } from '~/services'
-import type { IResponseSlots, ISlots } from '~/types/teacher.type'
+import type { IResponseSlots, ISlots, TeacherScheduleResponse } from '~/types/teacher.type'
 
 const slots = ref<ISlots[]>([])
 const isGettingSlots = ref(false)
 const isProcessing = ref(false)
 const isFetchingTeacherDetail = ref(false)
+const teacherSchedule = ref<TeacherScheduleResponse>()
 
 export const useTeacher = () => {
   const dataSlots = ref<IResponseSlots>()
+  const isScheduleModalVisible = useState<boolean>('schedule-modal', () => false)
+
   const { data, pending, error, refresh } = useAsyncData('teachers', () => apiTeacher.getAllTeachers(), {
     server: false
   })
@@ -25,6 +28,17 @@ export const useTeacher = () => {
       isGettingSlots.value = false
     }
   }
+  const getSchedule = async (teacherId: string) => {
+    isProcessing.value = true
+    try {
+      const rs = await apiTeacher.getScheduleById(teacherId)
+      teacherSchedule.value = rs
+    } catch (error) {
+      console.log(error)
+    } finally {
+      isProcessing.value = false
+    }
+  }
 
   return {
     data,
@@ -36,8 +50,11 @@ export const useTeacher = () => {
     isProcessing,
     isFetchingTeacherDetail,
     listTeachers,
+    teacherSchedule,
+    isScheduleModalVisible,
     refresh,
-    getSlotByDate
+    getSlotByDate,
+    getSchedule
   }
 }
 export const useTeacherDetail = (teacherId: MaybeRef<string>) => {

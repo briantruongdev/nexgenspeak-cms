@@ -1,4 +1,10 @@
-import type { IResponseSlots, IResponseTeachers, ITeacher, IToggleFavoriteResponse } from '~/types/teacher.type'
+import type {
+  IResponseSlots,
+  IResponseTeachers,
+  ITeacher,
+  IToggleFavoriteResponse,
+  TeacherScheduleResponse
+} from '~/types/teacher.type'
 import BaseService from './base.service'
 
 export class TeacherService extends BaseService {
@@ -20,5 +26,9 @@ export class TeacherService extends BaseService {
 
   async getTeacherById(teacherId: string): Promise<{ teacher: ITeacher }> {
     return this.get<{ teacher: ITeacher }>(`/${teacherId}`)
+  }
+
+  async getScheduleById(teacherId: string): Promise<TeacherScheduleResponse> {
+    return this.get<TeacherScheduleResponse>(`/${teacherId}/schedule`)
   }
 }

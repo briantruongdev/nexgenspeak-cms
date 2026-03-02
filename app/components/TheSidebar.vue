@@ -8,7 +8,7 @@ const items: NavigationMenuItem[][] = [
     {
       label: 'Giáo viên',
       icon: 'i-lucide-users-round',
-      to: ''
+      to: '/'
     },
     {
       label: 'Học sinh',

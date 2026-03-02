@@ -5,7 +5,7 @@ import type { ITeacher } from '~/types/teacher.type'
 
 definePageMeta({ middleware: 'auth' })
 
-const { listTeachers, pending } = useTeacher()
+const { listTeachers, pending, isScheduleModalVisible, getSchedule } = useTeacher()
 
 const UBadge = resolveComponent('UBadge')
 
@@ -62,23 +62,39 @@ const columns: ColumnDef<ITeacher>[] = [
     accessorKey: 'pricePerHour',
     header: 'Giá/giờ',
     cell: ({ row }) => h('span', { class: 'font-semibold text-primary text-sm' }, `$${row.original.pricePerHour}`)
+  },
+  {
+    accessorKey: 'actions',
+    header: 'Xem lịch giảng dạy',
+    cell: () => ''
   }
 ]
+
+const handleViewSchedule = (teacherId: string) => {
+  getSchedule(teacherId)
+  isScheduleModalVisible.value = true
+}
 </script>
 
 <template>
   <div class="card-box flex-1 space-y-6">
-    <ClientOnly>
-      <UTable :data="listTeachers ?? []" :columns="columns" :ui="{ tr: 'hover:bg-gray-50 dark:hover:bg-gray-800/50' }" />
-      <template #fallback>
-        <div class="h-[40vh] flex justify-center items-center">
-          <div class="flex flex-col items-center space-y-4">
-            <UIcon name="i-lucide-loader" class="animate-spin size-10 text-primary" />
-            <span class="text-gray-500 animate-pulse">Đang tải...</span>
-          </div>
-        </div>
-      </template>
-    </ClientOnly>
+    <UTable
+      :data="listTeachers ?? []"
+      :loading="pending"
+      loading-color="primary"
+      loading-animation="carousel"
+      :columns="columns"
+      :ui="{ tr: 'hover:bg-gray-50 dark:hover:bg-gray-800/50' }"
+    >
+      <template #actions-cell="{ row }">
+        <p class="flex justify-center" @click="handleViewSchedule(row.original.teacherId)">
+          <UIcon
+            name="i-lucide-eye"
+            class="hover:cursor-pointer hover:text-primary transition-all duration-300 hover:scale-110 size-6"
+          />
+        </p> </template
+    ></UTable>
+    <UiTeacherModalSchedule />
   </div>
 </template>
 

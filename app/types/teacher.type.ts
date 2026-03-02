@@ -51,3 +51,36 @@ export interface IToggleFavoriteResponse {
     favoriteTeachers: number[]
   }
 }
+export interface ScheduleSlot {
+  registrationId: string
+  date: string
+  slotId: number
+  startTime: string
+  endTime: string
+  studentId: string
+  studentEmail: string
+  studentPhone: string
+  status: 'completed' | 'upcoming' | 'today'
+}
+export interface TeacherSchedule {
+  completed: ScheduleSlot[]
+  upcoming: ScheduleSlot[]
+  today: ScheduleSlot[]
+}
+export interface ScheduleSummary {
+  totalCompletedSlots: number
+  totalUpcomingSlots: number
+  totalTodaySlots: number
+  totalCompletedHours: number
+  totalUpcomingHours: number
+  totalTodayHours: number
+}
+export interface TeacherScheduleResponse {
+  teacher: {
+    teacherId: string
+    fullName: string
+    position: string
+  }
+  schedule: TeacherSchedule
+  summary: ScheduleSummary
+}
