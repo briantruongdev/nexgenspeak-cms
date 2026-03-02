@@ -69,13 +69,7 @@ const columns: ColumnDef<ITeacher>[] = [
 <template>
   <div class="card-box flex-1 space-y-6">
     <ClientOnly>
-      <div v-if="pending" class="h-[40vh] flex justify-center items-center">
-        <div class="flex flex-col items-center space-y-4">
-          <UIcon name="i-lucide-loader" class="animate-spin size-10 text-primary" />
-          <span class="text-gray-500 animate-pulse">Đang tải...</span>
-        </div>
-      </div>
-      <UTable v-else :data="listTeachers ?? []" :columns="columns" :ui="{ tr: 'hover:bg-gray-50 dark:hover:bg-gray-800/50' }" />
+      <UTable :data="listTeachers ?? []" :columns="columns" :ui="{ tr: 'hover:bg-gray-50 dark:hover:bg-gray-800/50' }" />
       <template #fallback>
         <div class="h-[40vh] flex justify-center items-center">
           <div class="flex flex-col items-center space-y-4">
