@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { h } from 'vue'
+import { h, resolveComponent } from 'vue'
 import type { ColumnDef } from '@tanstack/vue-table'
 import type { IStudent } from '~/types/student.type'
-import ModalSchedule from '~/components/ui/student/ModalSchedule.vue'
+import { apiStudent } from '~/services'
 
+const UButton = resolveComponent('UButton')
+const UDropdownMenu = resolveComponent('UDropdownMenu')
+const { showError, showSuccess } = useNotification()
 definePageMeta({ middleware: 'auth' })
 
-const { listStudents, pending, getSchedule, isScheduleModalVisible } = useStudent()
+const { listStudents, pending, getSchedule, isScheduleModalVisible, isSettingsModalVisible, refresh } = useStudent()
+const student = ref<IStudent>({} as IStudent)
 
+const modalSettingsRef = ref()
 const columns: ColumnDef<IStudent>[] = [
   {
     accessorKey: 'email',
@@ -47,16 +52,79 @@ const columns: ColumnDef<IStudent>[] = [
     header: 'Ngày tạo',
     cell: ({ row }) => h('span', { class: 'text-sm text-gray-500' }, new Date(row.original.createdAt).toLocaleDateString('vi-VN'))
   },
+  // {
+  //   accessorKey: 'actions',
+  //   header: 'Xem lịch học',
+  //   cell: () => ''
+  // },
   {
-    accessorKey: 'actions',
-    header: 'Xem lịch học',
-    cell: () => ''
+    id: 'actions',
+    meta: {
+      class: {
+        td: 'text-right'
+      }
+    },
+    cell: ({ row }) => {
+      return h(
+        UDropdownMenu,
+        {
+          content: {
+            align: 'end'
+          },
+          items: getRowItems(row),
+          'aria-label': 'Actions dropdown'
+        },
+        () =>
+          h(UButton, {
+            icon: 'i-lucide-ellipsis-vertical',
+            color: 'neutral',
+            variant: 'ghost',
+            'aria-label': 'Actions dropdown'
+          })
+      )
+    }
   }
 ]
+function getRowItems(row: any) {
+  return [
+    {
+      label: 'Xem lịch học',
+      icon: 'i-lucide-eye',
+      onSelect() {
+        handleViewSchedule(row.original.userId)
+      }
+    },
+    {
+      label: 'Cài đặt',
+      icon: 'i-lucide-settings',
+      onSelect() {
+        student.value = row.original
+        isSettingsModalVisible.value = true
+      }
+    }
+  ]
+}
 
 const handleViewSchedule = (userId: string) => {
   getSchedule(userId)
   isScheduleModalVisible.value = true
+}
+
+const isLoading = ref(false)
+const handleSettings = async (form: Record<string, any>) => {
+  isLoading.value = true
+  try {
+    await apiStudent.settings(student.value.userId, { ...form, maxSlotsPerDay: +form.maxSlotsPerDay })
+    refresh()
+    isSettingsModalVisible.value = false
+    modalSettingsRef.value?.resetForm()
+    showSuccess('Cập nhật cài đặt thành công')
+  } catch (error) {
+    console.log(error)
+    showError('Cập nhật cài đặt thất bại')
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
 
@@ -64,20 +132,14 @@ const handleViewSchedule = (userId: string) => {
   <div class="card-box flex-1 space-y-6">
     <UTable
       :data="listStudents ?? []"
-      :loading="pending"
+      :loading="pending || isLoading"
       loading-color="primary"
       loading-animation="carousel"
       :columns="columns"
       :ui="{ tr: 'hover:bg-gray-50 dark:hover:bg-gray-800/50' }"
-      ><template #actions-cell="{ row }">
-        <p class="flex justify-center" @click="handleViewSchedule(row.original.userId)">
-          <UIcon
-            name="i-lucide-eye"
-            class="hover:cursor-pointer hover:text-primary transition-all duration-300 hover:scale-110 size-6"
-          />
-        </p> </template
-    ></UTable>
-    <ModalSchedule />
+    />
+    <UiStudentModalSchedule />
+    <UiStudentModalSettings ref="modalSettingsRef" :student="student" :loading="isLoading" @save="handleSettings" />
   </div>
 </template>
 

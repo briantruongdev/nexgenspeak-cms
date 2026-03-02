@@ -5,6 +5,7 @@ const isProcessing = ref(false)
 const studentSchedule = ref<StudentScheduleResponse>()
 export const useStudent = () => {
   const isScheduleModalVisible = useState<boolean>('student-schedule-modal', () => false)
+  const isSettingsModalVisible = useState<boolean>('settings-modal', () => false)
 
   const { data, pending, error, refresh } = useAsyncData('students', () => apiStudent.getAllStudents(), {
     server: false
@@ -21,5 +22,16 @@ export const useStudent = () => {
       isProcessing.value = false
     }
   }
-  return { data, pending, error, refresh, listStudents, isScheduleModalVisible, getSchedule, isProcessing, studentSchedule }
+  return {
+    data,
+    pending,
+    error,
+    refresh,
+    listStudents,
+    isScheduleModalVisible,
+    getSchedule,
+    isProcessing,
+    studentSchedule,
+    isSettingsModalVisible
+  }
 }

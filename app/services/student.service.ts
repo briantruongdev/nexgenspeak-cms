@@ -13,4 +13,8 @@ export class StudentService extends BaseService {
   async getScheduleById(studentId: string): Promise<StudentScheduleResponse> {
     return this.get<StudentScheduleResponse>(`/${studentId}/schedule`)
   }
+
+  async settings(studentId: string, body: Record<string, any>): Promise<any> {
+    return this.put<any>(`/${studentId}/settings`, body)
+  }
 }
