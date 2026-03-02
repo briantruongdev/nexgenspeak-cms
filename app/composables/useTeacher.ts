@@ -9,7 +9,7 @@ const teacherSchedule = ref<TeacherScheduleResponse>()
 
 export const useTeacher = () => {
   const dataSlots = ref<IResponseSlots>()
-  const isScheduleModalVisible = useState<boolean>('schedule-modal', () => false)
+  const isScheduleModalVisible = useState<boolean>('teacher-schedule-modal', () => false)
 
   const { data, pending, error, refresh } = useAsyncData('teachers', () => apiTeacher.getAllTeachers(), {
     server: false

@@ -1,4 +1,4 @@
-import type { IResponseStudent } from '~/types/student.type'
+import type { IResponseStudent, StudentScheduleResponse } from '~/types/student.type'
 import BaseService from './base.service'
 
 export class StudentService extends BaseService {
@@ -8,5 +8,9 @@ export class StudentService extends BaseService {
 
   async getAllStudents(): Promise<IResponseStudent> {
     return this.get<IResponseStudent>('')
+  }
+
+  async getScheduleById(studentId: string): Promise<StudentScheduleResponse> {
+    return this.get<StudentScheduleResponse>(`/${studentId}/schedule`)
   }
 }

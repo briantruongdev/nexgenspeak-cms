@@ -1,54 +1,54 @@
 <script setup lang="ts">
-import type { ScheduleSlot } from '~/types/teacher.type'
+import type { StudentScheduleSlot } from '~/types/student.type'
 
-const { isScheduleModalVisible, teacherSchedule, isProcessing } = useTeacher()
+const { isScheduleModalVisible, studentSchedule, isProcessing } = useStudent()
 
 const tabs = computed(() => [
   {
     label: 'Hôm nay',
     slot: 'today' as const,
-    badge: teacherSchedule.value?.schedule.today.length ?? 0
+    badge: studentSchedule.value?.schedule.today.length ?? 0
   },
   {
     label: 'Sắp tới',
     slot: 'upcoming' as const,
-    badge: teacherSchedule.value?.schedule.upcoming.length ?? 0
+    badge: studentSchedule.value?.schedule.upcoming.length ?? 0
   },
   {
     label: 'Đã hoàn thành',
     slot: 'completed' as const,
-    badge: teacherSchedule.value?.schedule.completed.length ?? 0
+    badge: studentSchedule.value?.schedule.completed.length ?? 0
   }
 ])
 
 const summary = computed(() => [
   {
     label: 'Hôm nay',
-    slots: teacherSchedule.value?.summary.totalTodaySlots ?? 0,
-    hours: teacherSchedule.value?.summary.totalTodayHours ?? 0,
+    slots: studentSchedule.value?.summary.totalTodaySlots ?? 0,
+    hours: studentSchedule.value?.summary.totalTodayHours ?? 0,
     color: 'text-blue-500',
     bg: 'bg-blue-50',
     icon: 'i-lucide-calendar-days'
   },
   {
     label: 'Sắp tới',
-    slots: teacherSchedule.value?.summary.totalUpcomingSlots ?? 0,
-    hours: teacherSchedule.value?.summary.totalUpcomingHours ?? 0,
+    slots: studentSchedule.value?.summary.totalUpcomingSlots ?? 0,
+    hours: studentSchedule.value?.summary.totalUpcomingHours ?? 0,
     color: 'text-amber-500',
     bg: 'bg-amber-50',
     icon: 'i-lucide-clock'
   },
   {
     label: 'Đã hoàn thành',
-    slots: teacherSchedule.value?.summary.totalCompletedSlots ?? 0,
-    hours: teacherSchedule.value?.summary.totalCompletedHours ?? 0,
+    slots: studentSchedule.value?.summary.totalCompletedSlots ?? 0,
+    hours: studentSchedule.value?.summary.totalCompletedHours ?? 0,
     color: 'text-green-500',
     bg: 'bg-green-50',
     icon: 'i-lucide-circle-check-big'
   }
 ])
 
-const statusConfig: Record<ScheduleSlot['status'], { label: string; color: 'success' | 'warning' | 'primary' }> = {
+const statusConfig: Record<StudentScheduleSlot['status'], { label: string; color: 'success' | 'warning' | 'primary' }> = {
   completed: { label: 'Hoàn thành', color: 'success' },
   upcoming: { label: 'Sắp tới', color: 'warning' },
   today: { label: 'Hôm nay', color: 'primary' }
@@ -61,8 +61,8 @@ const formatDate = (d: string) =>
 <template>
   <UModal
     v-model:open="isScheduleModalVisible"
-    :title="teacherSchedule?.teacher.fullName ?? 'Lịch giảng dạy'"
-    :description="teacherSchedule?.teacher.position"
+    :title="studentSchedule?.student.email ?? 'Lịch học'"
+    :description="`Slot/ngày: ${studentSchedule?.student.slotAvailablePerDay ?? 0}`"
     class="w-2/3"
     :ui="{ close: 'hover:cursor-pointer' }"
   >
@@ -71,11 +71,11 @@ const formatDate = (d: string) =>
       <div v-if="isProcessing" class="h-64 flex justify-center items-center">
         <div class="flex flex-col items-center space-y-4">
           <UIcon name="i-lucide-loader" class="animate-spin size-10 text-primary" />
-          <span class="text-gray-500 animate-pulse">Đang tải lịch giảng dạy...</span>
+          <span class="text-gray-500 animate-pulse">Đang tải lịch học...</span>
         </div>
       </div>
 
-      <div v-else-if="teacherSchedule" class="space-y-5">
+      <div v-else-if="studentSchedule" class="space-y-5">
         <!-- Summary cards -->
         <div class="grid grid-cols-3 gap-3">
           <div v-for="item in summary" :key="item.label" class="rounded-xl p-4 flex items-center gap-3" :class="item.bg">
@@ -93,30 +93,30 @@ const formatDate = (d: string) =>
         <!-- Tabs -->
         <UTabs :items="tabs" variant="link">
           <template #today>
-            <UiTeacherScheduleTable
-              :rows="teacherSchedule.schedule.today"
+            <UiStudentScheduleTable
+              :rows="studentSchedule.schedule.today"
               :status-config="statusConfig"
               :format-date="formatDate"
             />
           </template>
           <template #upcoming>
-            <UiTeacherScheduleTable
-              :rows="teacherSchedule.schedule.upcoming"
+            <UiStudentScheduleTable
+              :rows="studentSchedule.schedule.upcoming"
               :status-config="statusConfig"
               :format-date="formatDate"
             />
           </template>
           <template #completed>
-            <UiTeacherScheduleTable
-              :rows="teacherSchedule.schedule.completed"
+            <UiStudentScheduleTable
+              :rows="studentSchedule.schedule.completed"
               :status-config="statusConfig"
               :format-date="formatDate"
             />
           </template>
 
           <template #trailing="{ item }">
-            <div class="flex items-center gap-3">
-              <UBadge :label="String(item.badge)" variant="outline" size="sm" :color="item.badge > 0 ? 'primary' : 'neutral'" />
+            <div class="flex items-center gap-2">
+              <UBadge :label="String(item.badge)" variant="subtle" size="sm" :color="item.badge > 0 ? 'primary' : 'neutral'" />
             </div>
           </template>
         </UTabs>
@@ -126,4 +126,3 @@ const formatDate = (d: string) =>
 </template>
 
 <style scoped></style>
-<!-- 90f78b33-28e2-466e-a128-75f3ff4c6ade -->

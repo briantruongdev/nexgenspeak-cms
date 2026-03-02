@@ -2,10 +2,11 @@
 import { h } from 'vue'
 import type { ColumnDef } from '@tanstack/vue-table'
 import type { IStudent } from '~/types/student.type'
+import ModalSchedule from '~/components/ui/student/ModalSchedule.vue'
 
 definePageMeta({ middleware: 'auth' })
 
-const { listStudents, pending } = useStudent()
+const { listStudents, pending, getSchedule, isScheduleModalVisible } = useStudent()
 
 const columns: ColumnDef<IStudent>[] = [
   {
@@ -45,8 +46,18 @@ const columns: ColumnDef<IStudent>[] = [
     accessorKey: 'createdAt',
     header: 'Ngày tạo',
     cell: ({ row }) => h('span', { class: 'text-sm text-gray-500' }, new Date(row.original.createdAt).toLocaleDateString('vi-VN'))
+  },
+  {
+    accessorKey: 'actions',
+    header: 'Xem lịch học',
+    cell: () => ''
   }
 ]
+
+const handleViewSchedule = (userId: string) => {
+  getSchedule(userId)
+  isScheduleModalVisible.value = true
+}
 </script>
 
 <template>
@@ -58,7 +69,15 @@ const columns: ColumnDef<IStudent>[] = [
       loading-animation="carousel"
       :columns="columns"
       :ui="{ tr: 'hover:bg-gray-50 dark:hover:bg-gray-800/50' }"
-    />
+      ><template #actions-cell="{ row }">
+        <p class="flex justify-center" @click="handleViewSchedule(row.original.userId)">
+          <UIcon
+            name="i-lucide-eye"
+            class="hover:cursor-pointer hover:text-primary transition-all duration-300 hover:scale-110 size-6"
+          />
+        </p> </template
+    ></UTable>
+    <ModalSchedule />
   </div>
 </template>
 
