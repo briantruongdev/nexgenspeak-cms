@@ -52,9 +52,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://nexgenspeak.com',
-      baseApiUrl: process.env.NUXT_PUBLIC_BASE_API_URL || 'https://u3ekmrrakd.execute-api.ap-southeast-1.amazonaws.com/dev',
-      maxSlots: parseInt(process.env.NUXT_PUBLIC_MAX_SLOTS || '3')
+      baseApiUrl: process.env.NUXT_PUBLIC_BASE_API_URL || 'https://u3ekmrrakd.execute-api.ap-southeast-1.amazonaws.com/dev/cms'
     }
   },
 

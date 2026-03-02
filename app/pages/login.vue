@@ -2,7 +2,7 @@
 import AuthLayout from '~/components/ui/AuthLayout.vue'
 import { loginSchema } from '~/schemas/auth.schema'
 
-definePageMeta({ middleware: 'guest' })
+definePageMeta({ layout: 'blank', middleware: 'guest' })
 
 const { isProcessing, formLogin, canLogin, handleLogin } = useAuth()
 const showPass = ref(false)

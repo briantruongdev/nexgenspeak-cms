@@ -34,6 +34,8 @@ export default defineNuxtPlugin(() => {
     }
     if (accessToken.value) {
       headers.Authorization = `Bearer ${accessToken.value}`
+    } else {
+      console.warn('[http] No access-token cookie found for request:', url)
     }
 
     if (import.meta.client) {
