@@ -7,7 +7,6 @@ useHead({
   ]
 })
 
-// Prevent layout shift on page load
 onMounted(() => {
   document.documentElement.style.scrollBehavior = 'auto'
 })
