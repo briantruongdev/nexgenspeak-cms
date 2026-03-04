@@ -5,7 +5,7 @@ import { useAuthStore } from '~/stores/auth.store'
 
 export const useAuth = () => {
   const { showSuccess, showError } = useNotification()
-  const { accessTokenCookie, email } = storeToRefs(useAuthStore())
+  const { accessTokenCookie, email, role } = storeToRefs(useAuthStore())
 
   const isProcessing = ref(false)
   const formLogin = ref<IFormLogin>({
@@ -22,12 +22,17 @@ export const useAuth = () => {
       showSuccess(data.message)
       accessTokenCookie.value = data.token
       email.value = data.user.email
+      role.value = data.user.role
 
       formLogin.value = {
         email: '',
         password: ''
       }
-      navigateTo('/')
+      if (role.value === 'admin') {
+        navigateTo('/')
+      } else {
+        navigateTo('/my-schedule')
+      }
     } catch (error) {
       console.error(error)
       showError('Đăng nhập không thành công. Vui lòng kiểm tra lại email hoặc mật khẩu.')
@@ -39,6 +44,7 @@ export const useAuth = () => {
   const handleLogout = () => {
     accessTokenCookie.value = null
     email.value = ''
+    role.value = ''
     navigateTo('/')
   }
 

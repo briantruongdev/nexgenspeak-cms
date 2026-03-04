@@ -10,12 +10,17 @@ export const useAuthStore = defineStore('auth', () => {
     maxAge: 60 * 60 * 24 * 7,
     sameSite: 'lax'
   })
+  const roleCookie = useCookie('role', {
+    maxAge: 60 * 60 * 24 * 7,
+    sameSite: 'lax'
+  })
 
   const isAuthenticated = computed(() => !!accessTokenCookie.value)
 
   return {
     accessTokenCookie,
     isAuthenticated,
-    email: emailCookie
+    email: emailCookie,
+    role: roleCookie
   }
 })

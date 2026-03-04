@@ -1,21 +1,30 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+import { useAuthStore } from '~/stores/auth.store'
 
 const router = useRouter()
+const { role, email } = storeToRefs(useAuthStore())
 
-const items: NavigationMenuItem[][] = [
-  [
-    {
-      label: 'Giáo viên',
-      icon: 'i-lucide-users-round',
-      to: '/'
-    },
-    {
-      label: 'Học sinh',
-      icon: 'i-lucide-users-round',
-      to: '/students'
-    }
-  ],
+const items = computed(() => [
+  role.value === 'admin'
+    ? [
+        {
+          label: 'Giáo viên',
+          icon: 'i-lucide-users-round',
+          to: '/'
+        },
+        {
+          label: 'Học sinh',
+          icon: 'i-lucide-users-round',
+          to: '/students'
+        }
+      ]
+    : [
+        {
+          label: 'Lịch dạy',
+          icon: 'i-lucide-calendar',
+          to: '/my-schedule'
+        }
+      ],
   [
     {
       label: 'Feedback',
@@ -30,7 +39,7 @@ const items: NavigationMenuItem[][] = [
       target: '_blank'
     }
   ]
-]
+])
 </script>
 
 <template>
@@ -41,7 +50,12 @@ const items: NavigationMenuItem[][] = [
     class="dark:bg-bg-seconary-dark rounded-lg bg-white border-none"
   >
     <template #header>
-      <img src="/images/logo.png" alt="Logo" class="cursor-pointer h-20" @click="router.push('/')" />
+      <img
+        src="/images/logo.png"
+        alt="Logo"
+        class="cursor-pointer h-20"
+        @click="role === 'admin' ? router.push('/') : router.push('/my-schedule')"
+      />
     </template>
 
     <template #default="{ collapsed }">
@@ -79,7 +93,7 @@ const items: NavigationMenuItem[][] = [
           src: 'https://i.pravatar.cc/120?img=5',
           class: 'w-8 h-8'
         }"
-        :label="collapsed ? undefined : 'Admin'"
+        :label="email || ''"
         color="neutral"
         variant="ghost"
         class="w-full gap-2"

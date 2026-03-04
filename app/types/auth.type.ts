@@ -4,6 +4,9 @@ export interface IResponseLogin {
   user: {
     userId: string
     email: string
+    fullName: string
+    role: 'admin' | 'teacher'
+    teacherId: string | null
   }
 }
 

@@ -84,3 +84,36 @@ export interface TeacherScheduleResponse {
   schedule: TeacherSchedule
   summary: ScheduleSummary
 }
+
+// ── My Schedule (CMS teacher self‑view) ──
+export interface MyScheduleSlot {
+  date: string
+  slotId: number
+  startTime: string
+  endTime: string
+  status: 'available' | 'upcoming' | 'completed'
+  studentId?: string
+  studentEmail?: string
+  studentPhone?: string
+  registrationId?: string
+}
+
+export interface MyScheduleData {
+  completed: MyScheduleSlot[]
+  available: MyScheduleSlot[]
+  upcoming: MyScheduleSlot[]
+}
+
+export interface MyScheduleSummary {
+  totalCompletedSlots: number
+  totalUpcomingSlots: number
+  totalAvailableSlots: number
+  totalCompletedHours: number
+  totalUpcomingHours: number
+}
+
+export interface MyScheduleResponse {
+  teacherId: string
+  schedule: MyScheduleData
+  summary: MyScheduleSummary
+}
