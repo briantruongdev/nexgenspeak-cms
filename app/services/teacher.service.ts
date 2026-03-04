@@ -28,7 +28,7 @@ export class TeacherService extends BaseService {
     return this.get<{ teacher: ITeacher }>(`/${teacherId}`)
   }
 
-  async getScheduleById(teacherId: string): Promise<TeacherScheduleResponse> {
-    return this.get<TeacherScheduleResponse>(`/${teacherId}/schedule`)
+  async getScheduleById(teacherId: string, filters: string = 'all'): Promise<TeacherScheduleResponse> {
+    return this.get<TeacherScheduleResponse>(`/${teacherId}/schedule?filter=${filters}`)
   }
 }

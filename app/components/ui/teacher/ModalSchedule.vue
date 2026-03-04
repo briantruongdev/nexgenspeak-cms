@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ScheduleSlot } from '~/types/teacher.type'
 
-const { isScheduleModalVisible, teacherSchedule, isProcessing } = useTeacher()
+const { isScheduleModalVisible, teacherSchedule, isProcessing, getSchedule } = useTeacher()
 
 const tabs = computed(() => [
   {
@@ -56,6 +56,22 @@ const statusConfig: Record<ScheduleSlot['status'], { label: string; color: 'succ
 
 const formatDate = (d: string) =>
   new Date(d).toLocaleDateString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' })
+
+const filters = ref('all')
+const FILTERS = [
+  {
+    label: 'Tất cả',
+    value: 'all'
+  },
+  {
+    label: 'Tháng này',
+    value: 'this-month'
+  },
+  {
+    label: 'Tháng trước',
+    value: 'last-month'
+  }
+]
 </script>
 
 <template>
@@ -76,6 +92,15 @@ const formatDate = (d: string) =>
       </div>
 
       <div v-else-if="teacherSchedule" class="space-y-5">
+        <BaseSelectMenu
+          v-model="filters"
+          :items="FILTERS"
+          value-key="value"
+          label-key="label"
+          placeholder="Lọc"
+          class="w-1/6 max-lg:w-1/4 max-sm:w-full"
+          @change="getSchedule(teacherSchedule.teacher.teacherId, filters)"
+        />
         <!-- Summary cards -->
         <div class="grid grid-cols-3 gap-3">
           <div v-for="item in summary" :key="item.label" class="rounded-xl p-4 flex items-center gap-3" :class="item.bg">
@@ -126,4 +151,3 @@ const formatDate = (d: string) =>
 </template>
 
 <style scoped></style>
-<!-- 90f78b33-28e2-466e-a128-75f3ff4c6ade -->

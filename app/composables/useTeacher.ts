@@ -28,10 +28,10 @@ export const useTeacher = () => {
       isGettingSlots.value = false
     }
   }
-  const getSchedule = async (teacherId: string) => {
+  const getSchedule = async (teacherId: string, filters: string = 'all') => {
     isProcessing.value = true
     try {
-      const rs = await apiTeacher.getScheduleById(teacherId)
+      const rs = await apiTeacher.getScheduleById(teacherId, filters)
       teacherSchedule.value = rs
     } catch (error) {
       console.log(error)

@@ -71,7 +71,7 @@ const columns: ColumnDef<ITeacher>[] = [
 ]
 
 const handleViewSchedule = (teacherId: string) => {
-  getSchedule(teacherId)
+  getSchedule(teacherId, '')
   isScheduleModalVisible.value = true
 }
 </script>
