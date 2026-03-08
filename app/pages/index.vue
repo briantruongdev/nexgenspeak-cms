@@ -1,61 +1,101 @@
-<!-- Parent.vue -->
 <script setup lang="ts">
-const onBuy = (product: any) => {
-  console.log('🚀 Mua sản phẩm:', product)
-}
-const isMenuOpen = ref(false)
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value
+import { h, resolveComponent } from 'vue'
+import type { ColumnDef } from '@tanstack/vue-table'
+import type { ITeacher } from '~/types/teacher.type'
+
+definePageMeta({ middleware: 'auth' })
+
+const { listTeachers, pending, isScheduleModalVisible, getSchedule } = useTeacher()
+
+const UBadge = resolveComponent('UBadge')
+
+const columns: ColumnDef<ITeacher>[] = [
+  {
+    accessorKey: 'avatar',
+    header: 'Avatar',
+    cell: ({ row }) =>
+      h('img', {
+        src: `/images/${row.original.avatar}`,
+        alt: row.original.fullName,
+        class: 'size-10 rounded-full object-cover'
+      })
+  },
+  {
+    accessorKey: 'fullName',
+    header: 'Tên giáo viên',
+    cell: ({ row }) =>
+      h('div', [
+        h('p', { class: 'font-semibold text-sm' }, row.original.fullName),
+        h('p', { class: 'text-xs text-gray-500' }, row.original.position)
+      ])
+  },
+  {
+    accessorKey: 'rating',
+    header: 'Đánh giá',
+    cell: ({ row }) =>
+      h('div', { class: 'flex items-center gap-1' }, [
+        h(UBadge, { color: 'warning', variant: 'subtle' }, () => `⭐ ${row.original.rating}`),
+        h('span', { class: 'text-xs text-gray-400' }, `(${row.original.totalReviews})`)
+      ])
+  },
+  {
+    accessorKey: 'students',
+    header: 'Học viên',
+    cell: ({ row }) => h('span', { class: 'text-sm' }, row.original.students.toLocaleString())
+  },
+  {
+    accessorKey: 'lessons',
+    header: 'Buổi học',
+    cell: ({ row }) => h('span', { class: 'text-sm' }, row.original.lessons.toLocaleString())
+  },
+  {
+    accessorKey: 'languages',
+    header: 'Ngôn ngữ',
+    cell: ({ row }) =>
+      h(
+        'div',
+        { class: 'flex flex-wrap gap-1' },
+        row.original.languages.map(lang => h(UBadge, { key: lang, color: 'primary', variant: 'outline', size: 'sm' }, () => lang))
+      )
+  },
+  {
+    accessorKey: 'pricePerHour',
+    header: 'Giá/giờ',
+    cell: ({ row }) => h('span', { class: 'font-semibold text-primary text-sm' }, `$${row.original.pricePerHour}`)
+  },
+  {
+    accessorKey: 'actions',
+    header: 'Xem lịch giảng dạy',
+    cell: () => ''
+  }
+]
+
+const handleViewSchedule = (teacherId: string) => {
+  getSchedule(teacherId, '')
+  isScheduleModalVisible.value = true
 }
 </script>
 
 <template>
-  <div>
-    <UiChildComponent
-      v-slot="{ product, onBuy: emitBuy }"
-      @action-click="onBuy"
+  <div class="card-box flex-1 space-y-6">
+    <UTable
+      :data="listTeachers ?? []"
+      :loading="pending"
+      loading-color="primary"
+      loading-animation="carousel"
+      :columns="columns"
+      :ui="{ tr: 'hover:bg-gray-50 dark:hover:bg-gray-800/50' }"
     >
-      <div class="p-3 border mb-2 flex justify-between">
-        <span>{{ product.name }}</span>
-        <button @click="emitBuy()">
-          Mua
-        </button>
-      </div>
-    </UiChildComponent>
-    <UIcon
-      name="i-lucide-menu"
-      class="size-5 hover:cursor-pointer z-50 relative"
-      @click="toggleMenu"
-    />
-
-    <!-- MENU -->
-    <div
-      class="menu"
-      :class="{ 'menu--open': isMenuOpen }"
-    >
-      <p class="text-white text-2xl font-bold p-4">
-        Ngo Duc Canh
-      </p>
-    </div>
+      <template #actions-cell="{ row }">
+        <p class="flex justify-center" @click="handleViewSchedule(row.original.teacherId)">
+          <UIcon
+            name="i-lucide-eye"
+            class="hover:cursor-pointer hover:text-primary transition-all duration-300 hover:scale-110 size-6"
+          />
+        </p> </template
+    ></UTable>
+    <UiTeacherModalSchedule />
   </div>
 </template>
 
-<style scoped>
-.menu {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100vh;
-  background: #ef4444;
-
-  /* trạng thái đóng */
-  transform: translateX(100%);
-  transition: transform 0.4s ease-in-out;
-  z-index: 40;
-}
-
-.menu--open {
-  transform: translateX(0);
-}
-</style>
+<style scoped></style>

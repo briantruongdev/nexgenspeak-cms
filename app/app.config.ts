@@ -2,7 +2,7 @@ export default defineAppConfig({
   title: 'BEKA Group Alliance | Digital Experience Consultancy &amp; Implementation',
   description: 'BEKA Group Alliance | Digital Experience Consultancy &amp; Implementation',
   pages: {
-    'home': {
+    home: {
       path: '/',
       name: 'Home'
     },

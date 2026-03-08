@@ -1,25 +1,57 @@
-@import "tailwindcss";
-@import "@nuxt/ui";
+@import 'tailwindcss';
+@import '@nuxt/ui';
 
 @theme static {
-  --font-sans: 'Public Sans', sans-serif;
+  /* Color */
+  --ui-primary: #e87722;
 
-  --color-green-50: #EFFDF5;
-  --color-green-100: #D9FBE8;
-  --color-green-200: #B3F5D1;
-  --color-green-300: #75EDAE;
-  --color-green-400: #00DC82;
-  --color-green-500: #00C16A;
-  --color-green-600: #00A155;
-  --color-green-700: #007F45;
-  --color-green-800: #016538;
-  --color-green-900: #0A5331;
-  --color-green-950: #052E16;
+  /* Text */
+  --color-text-primary: #183028;
+  --ui-text: #183028;
+
+  /* Border */
+  --color-border-primary: #d0d5dd;
+
+  /* Background */
+  --color-bg-primary: #d9d9d9;
+
+  --container-lg: 100vw;
+
+  /* Font Family */
+  --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-.dark {
-  --ui-bg: var(--ui-color-neutral-950);
-  --ui-bg-muted: var(--ui-color-neutral-900);
-  --ui-bg-elevated: var(--ui-color-neutral-900);
-  --ui-bg-accented: var(--ui-color-neutral-800);
+html,
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  background-color: #fef9f4;
+  color: var(--ui-text, #183028);
+  scroll-behavior: smooth;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  @media (min-width: 1440px) {
+    max-width: 1280px;
+  }
+  @media (min-width: 1920px) {
+    max-width: 1440px;
+  }
+  @media (min-width: 2560px) {
+    max-width: 1920px;
+  }
+}
+
+
+.card-box {
+  @apply space-y-4 bg-white p-4 m-6 rounded-lg;
 }

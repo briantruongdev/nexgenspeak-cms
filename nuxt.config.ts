@@ -2,7 +2,7 @@
 import svgLoader from 'vite-svg-loader'
 
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/i18n', '@pinia/nuxt'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@pinia/nuxt'],
 
   devtools: {
     enabled: true
@@ -52,36 +52,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://nexgenspeak.com',
-      baseApiUrl: process.env.NUXT_PUBLIC_BASE_API_URL || 'https://u3ekmrrakd.execute-api.ap-southeast-1.amazonaws.com/dev',
-      maxSlots: parseInt(process.env.NUXT_PUBLIC_MAX_SLOTS || '3')
-    }
-  },
-
-  routeRules: {
-    '/': { prerender: true },
-    '/blog': { ssr: true },
-    '/teachers': { ssr: true },
-    '/teacher/**': { ssr: true },
-    '/contact': { ssr: true },
-    '/document': { ssr: true },
-    '/recruitment': { ssr: true },
-    '/study-plan': { ssr: true },
-    '/register': { ssr: true },
-    '/login': { ssr: true },
-    '/forgot-password': { ssr: true },
-    // SEO files
-    '/sitemap.xml': {
-      headers: {
-        'Content-Type': 'application/xml',
-        'Cache-Control': 'public, max-age=3600, s-maxage=3600'
-      }
-    },
-    '/robots.txt': {
-      headers: {
-        'Content-Type': 'text/plain',
-        'Cache-Control': 'public, max-age=86400, s-maxage=86400'
-      }
+      baseApiUrl: process.env.NUXT_PUBLIC_BASE_API_URL || 'https://u3ekmrrakd.execute-api.ap-southeast-1.amazonaws.com/dev/cms'
     }
   },
 
@@ -114,36 +85,6 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
-    }
-  },
-  i18n: {
-    locales: [
-      {
-        code: 'en',
-        iso: 'en-US',
-        name: 'English',
-        file: 'en.json',
-        dir: 'ltr'
-      },
-      {
-        code: 'vi',
-        iso: 'vi-VN',
-        name: 'Tiếng Việt',
-        file: 'vi.json',
-        dir: 'ltr'
-      }
-    ],
-    defaultLocale: 'vi',
-    strategy: 'no_prefix',
-    langDir: 'locales',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_redirected',
-      redirectOn: 'root',
-      alwaysRedirect: false,
-      fallbackLocale: 'vi',
-      cookieCrossOrigin: false,
-      cookieSecure: true
     }
   }
 })
